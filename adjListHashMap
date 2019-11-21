@@ -1,0 +1,123 @@
+import java.io.IOException;
+
+import java.util.StringTokenizer;
+
+import java.util.*;
+
+import org.apache.hadoop.conf.Configuration;
+
+import org.apache.hadoop.fs.Path;
+
+import org.apache.hadoop.io.IntWritable;
+
+import org.apache.hadoop.io.Text;
+
+import org.apache.hadoop.mapreduce.Job;
+
+import org.apache.hadoop.mapreduce.Mapper;
+
+import org.apache.hadoop.mapreduce.Reducer;
+
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+public class adjList
+{
+
+  public static class adjMapper extends Mapper<Object, Text, Text, Text>
+  {
+
+      //private final static IntWritable one = new IntWritable(1);
+
+    private Text outVal = new Text();
+
+    private Text outKey = new Text();
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException
+
+    {
+        String inline = value.toString();
+
+        if (!inline.startsWith("#"))
+        {
+            String [] inVals = inline.split("\t");
+
+            outKey.set(inVals[0]);
+
+            outVal.set(inVals[1]);
+
+            context.write(outKey, outVal);
+        }
+    }
+  }
+
+ public static class adjReducer extends Reducer<Text,Text,Text,Text>
+  {
+     int maxvalueinmap;
+     int minvalueinmap;
+     Text maxkey=new Text();
+     Text minkey=new Text();
+     @Override
+     public void reduce(Text key, Iterable<Text> values,Context context) throws IOException, InterruptedException
+        {
+                String adjlst = "";
+                for (Text val : values)
+                {
+                  adjlst = adjlst+","+val;
+                }
+
+                adjlst.substring(1);
+
+                StringTokenizer tokenizer=new StringTokenizer(adjlst,",");
+
+                mp.put(key,tokenizer.countTokens());
+
+                 maxvalueinmap=(Collections.max(mp.values()));
+                 minvalueinmap=(Collections.min(mp.values()));
+                for(Map.Entry<Text,Integer>entry : mp.entrySet())
+                {
+                        if(entry.getValue() == maxvalueinmap){
+                                maxkey.set(entry.getKey());
+                                context.write(maxkey,new Text("Max connectivity node count is: " + Integer.toString(maxvalueinmap)));
+                        }
+                        if(entry.getValue() == minvalueinmap){
+                                minkey.set(entry.getKey());
+                                context.write(minkey,new Text("Min connectivity node count is: " + Integer.toString(maxvalueinmap));
+                        }
+                }
+        }
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+                context.write(maxkey,new Text("Max connectivity node count is: " + Integer.toString(maxvalueinmap)));
+                context.write(minkey,new Text("Min connectivity node count is: " + Integer.toString(minvalueinmap)));
+        }
+  }
+
+
+ public static void main(String[] args) throws Exception {
+
+    Configuration conf = new Configuration();
+
+    Job job = Job.getInstance(conf, "Cloud Computing Adj List Undirected graph");
+
+    job.setJarByClass(adjList.class);
+
+    job.setMapperClass(adjMapper.class);
+
+//    job.setCombinerClass(adjReducer.class);
+
+    job.setReducerClass(adjReducer.class);
+
+    job.setOutputKeyClass(Text.class);
+
+    job.setOutputValueClass(Text.class);
+
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+    System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+  }
+}
+
