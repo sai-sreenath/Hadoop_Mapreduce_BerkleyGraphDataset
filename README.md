@@ -19,3 +19,25 @@ Task:
 
 Dataset:
 https://snap.stanford.edu/data/web-BerkStan.html
+
+Hadoop commands used:
+
+(compile java file)
+hadoop com.sun.tools.javac.Main adjList.java -d Sreenath
+
+(creating jar file)
+jar -cvf adjList.jar -C Sreenath/ .
+
+(Listing the files in the directory)
+hadoop fs -ls /data/graph/
+
+(Removing the files or directories)
+hadoop fs -rm -r /tmp/pabbatph/undirectedresult
+hadoop fs -rm -r /tmp/pabbatph/directedresult
+
+(run the hadoop program)
+hadoop jar adjList.jar adjList /data/graph/web-BerkStan.txt /tmp/pabbatph/undirectedresult /tmp/pabbatph/directedresult
+
+(output command) 
+hadoop fs -cat /tmp/pabbatph/undirectedresult/part-r-00000
+hadoop fs -cat /tmp/pabbatph/directedresult/part-r-00000
