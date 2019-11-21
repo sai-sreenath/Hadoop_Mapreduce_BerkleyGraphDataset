@@ -16,3 +16,6 @@ Task:
 3. Create adjacency list for the undirected graph.
 4. Find the longest adjacency list in directed and undirected graph.
 5. Find the node with maximum and minimum connectivity.
+
+Dataset:
+https://snap.stanford.edu/data/web-BerkStan.html
