@@ -1,0 +1,42 @@
+Hadoop Commands
+
+General HDFS Commands
+
+List directory:
+$hadoop fs -ls 
+
+Make directory: 
+$hadoop fs -mkdir <dir_name>
+
+Delete directory: 
+$hadoop fs -rm -r <dir_name>
+
+
+Delete File: 
+$hadoop fs -rm <file_name>/<file_name>
+
+Compile Java file: 
+$hadoop com.sun.tools.javac.Main <filename.java> -d <destination directory>
+
+Create Jar file:
+$jar -cvf <filename.jar> -C <destination directory> <target directory>
+if want to use current directory as destination use . (dot) 
+
+Putting file to hdfs:
+$hadoop fs -put <filename> <destination directory on hdfs>
+
+Downloading file from hdfs to local machine:
+$hadoop fs -get <source file or directory on hdfs> <destination location>
+
+Running job on hadoop:
+hadoop jar <filename.jar> <filename without extension> <input data location on hdfs> <output data location on hdfs>
+
+
+Hadoop Streaming
+
+Please have the following link before trying hadoop streaming job:
+ http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/
+
+Streaming Commands:
+
+hadoop jar /usr/hdp/3.0.0.0-1634/hadoop-mapreduce/hadoop-streaming.jar -file /<code directory>/FileName.py -mapper /<code directory>/FileName.py -input <input_dir>/*.txt -output <output_dir>
